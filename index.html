@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <title>Polar Area A-Frame</title>
+        <meta name="description" content = "H1N1 Polar Area Chart">
+         
+        </script>
+    </head>
+<!-- Styles -->
+<style>
+    #chartdiv {
+      width: 100%;
+      height: 600px;
+    }
+    </style>
+    
+    <!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    
+    <!-- Chart code -->
+    <script>
+    am5.ready(function() {
+    
+    // Create root element
+    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+    var root = am5.Root.new("chartdiv");
+    
+    // Set themes
+    // https://www.amcharts.com/docs/v5/concepts/themes/
+    root.setThemes([
+      am5themes_Animated.new(root)
+    ]);
+    
+    // Data
+    // https://www.amcharts.com/docs/v5/charts/radar-chart/#Setting_data
+    var data = [{
+      category: "JANUARY",
+      value1: 0,
+      value2: .1,
+      value3: .5
+    }, {
+      category: "FEBRUARY",
+      value1: .1,
+      value2: .3,
+      value3: 2.5
+    }, {
+      category: "MARCH",
+      value1: .5,
+      value2: .6,
+      value3: .7
+    }, {
+      category: "APRIL",
+      value1: .2,
+      value2: .3,
+      value3: .1
+    }, {
+      category: "MAY",
+      value1: .7,
+      value2: .7,
+      value3: .5
+    }, {
+      category: "JUNE",
+      value1: 1.4,
+      value2: 1.7,
+      value3: .4
+    }, {
+      category: "JULY",
+      value1: .3,
+      value2: .2,
+      value3: .5
+    }, {
+      category: "AUGUST",
+      value1: .1,
+      value2: 0,
+      value3: .5
+    }, {
+      category: "SEPTEMBER",
+      value1: .2,
+      value2: 0,
+      value3: 5
+    }, {
+      category: "OCTOBER",
+      value1: 1,
+      value2: 1.5,
+      value3: 4
+    }, {
+      category: "NOVEMBER",
+      value1: 2,
+      value2: 2.7,
+      value3: 1.5
+    }, {
+      category: "DECEMBER",
+      value1: 1.3,
+      value2: 2,
+      value3: .4
+    }];
+    
+    // Create chart
+    // https://www.amcharts.com/docs/v5/charts/radar-chart/
+    var chart = root.container.children.push(
+      am5radar.RadarChart.new(root, {
+        panX: false,
+        panY: false,
+        wheelX: "panX",
+        wheelY: "zoomX"
+      })
+    );
+    
+    // Add cursor
+    // https://www.amcharts.com/docs/v5/charts/radar-chart/#Cursor
+    var cursor = chart.set("cursor", am5radar.RadarCursor.new(root, {
+      behavior: "zoomX"
+    }));
+    
+    cursor.lineY.set("visible", false);
+    
+    // Create axes and their renderers
+    // https://www.amcharts.com/docs/v5/charts/radar-chart/#Adding_axes
+    var xRenderer = am5radar.AxisRendererCircular.new(root, {
+      
+    });
+    
+    xRenderer.labels.template.setAll({
+      radius: 20
+    });
+    
+    var xAxis = chart.xAxes.push(
+      am5xy.CategoryAxis.new(root, {
+        maxDeviation: 0,
+        categoryField: "category",
+        renderer: xRenderer,
+        tooltip: am5.Tooltip.new(root, {})
+      })
+    );
+    
+    xAxis.data.setAll(data);
+    
+    var yAxis = chart.yAxes.push(
+      am5xy.ValueAxis.new(root, {
+        renderer: am5radar.AxisRendererRadial.new(root, {})
+      })
+    );
+    
+    // Create series
+    // https://www.amcharts.com/docs/v5/charts/radar-chart/#Adding_series
+    for (var i = 1; i <= 3; i++) {
+      var series = chart.series.push(
+        am5radar.RadarColumnSeries.new(root, {
+          stacked: true,
+          name: "Series " + i,
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "value" + i,
+          categoryXField: "category"
+        })
+      );
+    
+      series.columns.template.setAll({
+        tooltipText: "{name}: {valueY}",
+        width: am5.percent(100)
+      });
+    
+      series.data.setAll(data);
+      
+      series.appear(1000);
+    }
+    
+    // Add scrollbars
+    chart.set("scrollbarX", am5.Scrollbar.new(root, { orientation: "horizontal", exportable: false }));
+    chart.set("scrollbarY", am5.Scrollbar.new(root, { orientation: "vertical", exportable: false }));
+    
+    let legend = chart.children.push(am5.Legend.new(root, {
+  nameField: "categoryX"
+}));
+
+legend.data.setAll(chart.series.values);
+    // Animate chart
+    // https://www.amcharts.com/docs/v5/concepts/animations/#Initial_animation
+    chart.appear(1000, 100);
+    
+    }); // end am5.ready()
+    </script>
+    
+    <!-- HTML -->
+    <div id="chartdiv"></div>
